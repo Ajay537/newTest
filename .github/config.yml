@@ -1,33 +1,39 @@
-updateDocsWhiteList:
-  - BUG
-  - Chore
-  - minor
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:7.10
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
 
-updateDocsComment: >
-  Thanks for opening this pull request! The maintainers of this repository would appreciate it if you would update some of our documentation based on your changes.
+    working_directory: ~/repo
 
-requestInfoReplyComment: >
-  We would appreciate it if you could provide us with more info about this issue/pr!
+    steps:
+      - checkout
 
-requestInfoLabelToAdd: request-more-info
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
-newPRWelcomeComment: >
-  Thanks so much for opening your first PR here!
+      - run: yarn install
 
-firstPRMergeComment: >
-  Congrats on merging your first pull request here! :tada: How awesome!
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+        
+      # run tests!
+      - run: yarn test
 
-newIssueWelcomeComment: >
-  Thanks for opening this issue, a maintainer will get back to you shortly!
 
-sentimentBotToxicityThreshold: .7
-
-sentimentBotReplyComment: >
-  Please be sure to review the code of conduct and be respectful of other users. cc/ @hiimbex
-
-lockThreads:
-  toxicityThreshold: .7
-  numComments: 2
-  setTimeInHours: 72
-  replyComment: >
-    This thread is being locked due to exceeding the toxicity minimums. cc/ @hiimbex
